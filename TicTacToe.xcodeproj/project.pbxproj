@@ -173,20 +173,7 @@
 				LastSwiftUpdateCheck = 0800;
 				LastUpgradeCheck = 0800;
 				ORGANIZATIONNAME = amarjayr;
-				TargetAttributes = {
-					09B2DA7B1D1114A800417BEF = {
-						CreatedOnToolsVersion = 8.0;
-						DevelopmentTeam = 7246K2YF4X;
-						DevelopmentTeamName = "Sriram RAMACHANDRAN";
-						ProvisioningStyle = Automatic;
-					};
-					09B2DA851D1114AA00417BEF = {
-						CreatedOnToolsVersion = 8.0;
-						DevelopmentTeam = 7246K2YF4X;
-						DevelopmentTeamName = "Sriram RAMACHANDRAN";
-						ProvisioningStyle = Automatic;
-					};
-				};
+				TargetAttributes = {};
 			};
 			buildConfigurationList = 09B2DA791D1114A800417BEF /* Build configuration list for PBXProject "TicTacToe" */;
 			compatibilityVersion = "Xcode 3.2";
