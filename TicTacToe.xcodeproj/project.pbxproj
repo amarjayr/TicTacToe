@@ -10,11 +10,11 @@
 		094C286F1D11D59100593205 /* TicTacToe.swift in Sources */ = {isa = PBXBuildFile; fileRef = 094C286E1D11D59100593205 /* TicTacToe.swift */; };
 		0973C5E61D15173200528E5F /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0973C5E51D15173200528E5F /* GameViewController.swift */; };
 		0973C5E81D151C5200528E5F /* GameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0973C5E71D151C5200528E5F /* GameView.swift */; };
+		098343011D166C8E00DF6281 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 09F4EC3F1D16699600293FAD /* UIKit.framework */; };
 		09A22D521D125154006C8EAE /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 09A22D511D125154006C8EAE /* .gitignore */; };
 		09A9C43D1D14C4FF0040BBFC /* GamesHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09A9C43C1D14C4FF0040BBFC /* GamesHistory.swift */; };
 		09B2DA801D1114AA00417BEF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 09B2DA7F1D1114AA00417BEF /* Assets.xcassets */; };
 		09B2DA871D1114AA00417BEF /* MessagesExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 09B2DA861D1114AA00417BEF /* MessagesExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		09B2DA8C1D1114AA00417BEF /* Messages.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 09B2DA8B1D1114AA00417BEF /* Messages.framework */; };
 		09B2DA8F1D1114AA00417BEF /* MessagesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09B2DA8E1D1114AA00417BEF /* MessagesViewController.swift */; };
 		09B2DA921D1114AA00417BEF /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 09B2DA901D1114AA00417BEF /* MainInterface.storyboard */; };
 		09B2DA941D1114AA00417BEF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 09B2DA931D1114AA00417BEF /* Assets.xcassets */; };
@@ -59,6 +59,7 @@
 		09B2DA911D1114AA00417BEF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
 		09B2DA931D1114AA00417BEF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		09B2DA951D1114AA00417BEF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		09F4EC3F1D16699600293FAD /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -66,7 +67,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				09B2DA8C1D1114AA00417BEF /* Messages.framework in Frameworks */,
+				098343011D166C8E00DF6281 /* UIKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -105,6 +106,7 @@
 		09B2DA8A1D1114AA00417BEF /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				09F4EC3F1D16699600293FAD /* UIKit.framework */,
 				09B2DA8B1D1114AA00417BEF /* Messages.framework */,
 			);
 			name = Frameworks;

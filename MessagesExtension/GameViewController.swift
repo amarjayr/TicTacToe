@@ -16,6 +16,8 @@ class GameViewController: UIViewController {
     var game: TicTacToe?
     
     @IBOutlet weak var gameView: GameView?
+    @IBOutlet weak var gameViewWithConstraint: NSLayoutConstraint!
+    @IBOutlet weak var gameViewHeightConstraint: NSLayoutConstraint!
     
     private var gameDoneView: UIVisualEffectView?
     
@@ -36,6 +38,19 @@ class GameViewController: UIViewController {
         let layout = gameView?.collectionViewLayout as! UICollectionViewFlowLayout
         layout.minimumInteritemSpacing = 1.0
         layout.minimumLineSpacing = 2.0
+
+        
+        self.view.backgroundColor = #colorLiteral(red: 0.9607843137, green: 0.7960784314, blue: 0.3607843137, alpha: 1)
+        //self.gameView!.backgroundColor = #colorLiteral(red: 0.6823529412, green: 0.5058823529, blue: 0.03921568627, alpha: 1)
+        self.gameView!.backgroundColor = #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1)
+        
+        //let width = CGFloat(game!.size) * floor(gameView!.bounds.size.width / CGFloat(game!.size))-layout.minimumInteritemSpacing
+        //let height = CGFloat(game!.size) * floor(gameView!.bounds.size.height / CGFloat(game!.size))-layout.minimumLineSpacing
+        //gameViewHeightConstraint.constant = gameViewHeightConstraint.constant + 42
+        
+        
+        //print("WIDTH: " + String(width) + "HEIGHT: " + String(height))
+    
     }
     
     override func viewDidLayoutSubviews() {
@@ -91,15 +106,12 @@ extension GameViewController: UICollectionViewDataSource, UICollectionViewDelega
         let cell = gameView!.dequeueReusableCell(withReuseIdentifier: "TicTacToeCell", for: indexPath)
         
         if case .occupied(let user) = game![indexPath.row%(game?.size)!, Int(floor(Double(indexPath.row/(game?.size)!)))] where user == game!.player {
-            cell.contentView.backgroundColor = #colorLiteral(red: 0.1142767668, green: 0.3181744218, blue: 0.4912756383, alpha: 1)
+            cell.contentView.backgroundColor = #colorLiteral(red: 0.03137254902, green: 0.4039215686, blue: 0.5333333333, alpha: 1)
         } else if case .occupied(let user) = game![indexPath.row%(game?.size)!, Int(floor(Double(indexPath.row/(game?.size)!)))] where user == game!.opponent {
-            cell.contentView.backgroundColor = #colorLiteral(red: 0.6823074818, green: 0.08504396677, blue: 0.06545677781, alpha: 1)
+            cell.contentView.backgroundColor = #colorLiteral(red: 0.8666666667, green: 0.1098039216, blue: 0.1019607843, alpha: 1)
         } else {
-            cell.contentView.backgroundColor = #colorLiteral(red: 0.6588235294, green: 0.8549019608, blue: 0.862745098, alpha: 1)
+            cell.contentView.backgroundColor = #colorLiteral(red: 0.9607843137, green: 0.7960784314, blue: 0.3607843137, alpha: 1)
         }
-        
-        //let iceCreamPart = iceCreamParts[indexPath.row]
-        //cell.imageView.image = iceCreamPart.image
         
         return cell
     }

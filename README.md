@@ -1,5 +1,6 @@
 # TicTacToe
-iOS 10 Messages App TicTacToe Game
+iOS 10 Messages App TicTacToe Game. [Check out the demo.
+](https://www.youtube.com/watch?v=WkFf4DromKU)
 ## What is it?
 This project uses iOS 10's iMessage app feature to create a two-player n-sized TicTacToe game. The game was finished less than a week after Apple announced their new Messages framework.
 ## TODO:

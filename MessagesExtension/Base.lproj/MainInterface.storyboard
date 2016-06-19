@@ -34,7 +34,7 @@
                         <viewControllerLayoutGuide type="bottom" id="tZc-H6-Jfg"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="BXL-xy-qHd">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="7fJ-Pc-xAQ" customClass="GameView" customModule="MessagesExtension" customModuleProvider="target">
@@ -68,6 +68,8 @@
                     </view>
                     <connections>
                         <outlet property="gameView" destination="7fJ-Pc-xAQ" id="DCp-Yy-GpP"/>
+                        <outlet property="gameViewHeightConstraint" destination="LT3-DT-7lI" id="11h-su-kyj"/>
+                        <outlet property="gameViewWithConstraint" destination="RJu-g0-ggI" id="AYE-py-bwY"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="wN9-Hb-heq" userLabel="First Responder" sceneMemberID="firstResponder"/>
