@@ -154,6 +154,7 @@
 				09B2DA821D1114AA00417BEF /* Sources */,
 				09B2DA831D1114AA00417BEF /* Frameworks */,
 				09B2DA841D1114AA00417BEF /* Resources */,
+				095781AB1D19C49500CD83D8 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -173,7 +174,17 @@
 				LastSwiftUpdateCheck = 0800;
 				LastUpgradeCheck = 0800;
 				ORGANIZATIONNAME = amarjayr;
-				TargetAttributes = {};
+				TargetAttributes = {
+					09B2DA7B1D1114A800417BEF = {
+						DevelopmentTeam = 7246K2YF4X;
+						DevelopmentTeamName = "Sriram RAMACHANDRAN";
+					};
+					09B2DA851D1114AA00417BEF = {
+						DevelopmentTeam = 7246K2YF4X;
+						DevelopmentTeamName = "Sriram RAMACHANDRAN";
+						ProvisioningStyle = Automatic;
+					};
+				};
 			};
 			buildConfigurationList = 09B2DA791D1114A800417BEF /* Build configuration list for PBXProject "TicTacToe" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -214,6 +225,22 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		095781AB1D19C49500CD83D8 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		09B2DA821D1114AA00417BEF /* Sources */ = {
