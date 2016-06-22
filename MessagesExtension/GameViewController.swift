@@ -17,10 +17,11 @@ class GameViewController: UIViewController {
 
     @IBOutlet weak var gameView: GameView?
     @IBOutlet weak var gameViewWithConstraint: NSLayoutConstraint!
-    @IBOutlet weak var gameViewHeightConstraint: NSLayoutConstraint!
 
-    private var gameDoneView: UIVisualEffectView?
-
+    @IBOutlet var gameOverView: UIView!
+    @IBOutlet weak var gameDoneViewTitle: UILabel!
+    @IBOutlet weak var gameDoneViewPlayAgain: UIButton!
+    
     // MARK: UIViewController
 
     override func viewDidLoad() {
@@ -44,45 +45,36 @@ class GameViewController: UIViewController {
 
     override func viewDidLayoutSubviews() {
         if let winner = game?.winner {
-            if gameDoneView == nil {
-                let blurEffect = UIBlurEffect(style: .light)
+            gameOverView.frame = self.view.frame
+            gameDoneViewPlayAgain.layer.cornerRadius = 25
+            gameDoneViewPlayAgain.layer.shadowColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1).cgColor
+            gameDoneViewPlayAgain.layer.shadowOpacity = 0.2
+            gameDoneViewPlayAgain.layer.shadowOffset = CGSize(width: 0, height: 2)
+            gameDoneViewPlayAgain.layer.shadowRadius = 4
+            gameOverView.backgroundColor = #colorLiteral(red: 0.8470588235, green: 0.8470588235, blue: 0.8470588235, alpha: 0.6)
 
-                gameDoneView = UIVisualEffectView(effect: blurEffect)
-                gameDoneView?.clipsToBounds = true
-                gameDoneView?.frame = CGRect(x: 0, y: 0, width: 120, height: 40)
-                gameDoneView?.autoresizingMask = [.flexibleRightMargin, .flexibleLeftMargin, .flexibleBottomMargin]
-                gameDoneView?.center = CGPoint(x: view.bounds.midX, y: view.bounds.midY)
-                gameDoneView?.layer.borderWidth = 2.0
-                gameDoneView?.layer.cornerRadius = 6.0
-                gameDoneView?.layer.borderColor = #colorLiteral(red: 0.1431525946, green: 0.4145618975, blue: 0.7041897774, alpha: 0.7).cgColor
-                gameDoneView?.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 0.6)
-
-                let winnerLabel = UILabel(frame: CGRect(x: 0, y: 0, width: (gameDoneView?.frame.size.width)!, height: (gameDoneView?.frame.size.height)!))
-                winnerLabel.textColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 0.7)
-                winnerLabel.textAlignment = .center
-                winnerLabel.autoresizingMask = [.flexibleRightMargin, .flexibleLeftMargin, .flexibleBottomMargin]
-                winnerLabel.center = CGPoint(x: (gameDoneView?.bounds.midX)!, y: (gameDoneView?.bounds.midY)!)
-                winnerLabel.font = UIFont.systemFont(ofSize: 18.0, weight: UIFontWeightSemibold)
-
-                if winner == game!.player {
-                    winnerLabel.text = "You won!"
-                } else if winner == game!.opponent {
-                    winnerLabel.text = "You lost."
-                } else if winner.uuid == nil {
-                    winnerLabel.text = "Draw!"
-                }
-
-                view.addSubview(gameDoneView!)
-                gameDoneView?.contentView.addSubview(winnerLabel)
+            if winner == game!.player {
+                gameDoneViewTitle.text = "You Win!"
+            } else if winner == game!.opponent {
+                gameDoneViewTitle.text = "You Lose."
+            } else if winner.uuid == nil {
+                gameDoneViewTitle.text = "Draw."
             }
+
+            self.view.addSubview(gameOverView)
+            
+            gameDoneViewPlayAgain.addTarget(self, action: #selector(newGameTapped), for: .touchUpInside)
         }
 
     }
-
+    func newGameTapped() {
+        delegate?.requestNewGame()
+    }
 }
 
 protocol GameViewControllerDelegate: class {
     func gameViewController(_ controller: GameViewController, renderedImage: UIImage)
+    func requestNewGame()
 }
 
 extension GameViewController: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {

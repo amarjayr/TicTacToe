@@ -69,10 +69,42 @@
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="gameDoneViewPlayAgain" destination="jLM-gA-Msd" id="6Qh-8k-wrg"/>
+                        <outlet property="gameDoneViewTitle" destination="QMu-Or-fit" id="Ze2-dA-ElU"/>
+                        <outlet property="gameOverView" destination="guO-z7-Xjb" id="gsj-ZJ-IRg"/>
                         <outlet property="gameView" destination="7fJ-Pc-xAQ" id="DCp-Yy-GpP"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="wN9-Hb-heq" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <view contentMode="scaleToFill" id="guO-z7-Xjb">
+                    <rect key="frame" x="0.0" y="0.0" width="405" height="184"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <subviews>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Game done text" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QMu-Or-fit">
+                            <fontDescription key="fontDescription" type="boldSystem" pointSize="36"/>
+                            <color key="textColor" red="0.2627450980392157" green="0.2627450980392157" blue="0.2627450980392157" alpha="1" colorSpace="calibratedRGB"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jLM-gA-Msd">
+                            <color key="backgroundColor" red="0.96078431372549022" green="0.40000000000000002" blue="0.36078431372549019" alpha="1" colorSpace="calibratedRGB"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="50" id="EBu-8o-yHt"/>
+                                <constraint firstAttribute="width" constant="200" id="nKr-mO-SXy"/>
+                            </constraints>
+                            <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
+                            <state key="normal" title="Play Again">
+                                <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            </state>
+                        </button>
+                    </subviews>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstItem="jLM-gA-Msd" firstAttribute="top" secondItem="QMu-Or-fit" secondAttribute="bottom" constant="10" id="3wq-Ey-mQb"/>
+                        <constraint firstItem="QMu-Or-fit" firstAttribute="centerX" secondItem="guO-z7-Xjb" secondAttribute="centerX" id="4E0-g3-TnN"/>
+                        <constraint firstItem="jLM-gA-Msd" firstAttribute="centerX" secondItem="guO-z7-Xjb" secondAttribute="centerX" id="Wdd-es-4Dm"/>
+                        <constraint firstItem="jLM-gA-Msd" firstAttribute="centerY" secondItem="guO-z7-Xjb" secondAttribute="centerY" id="anO-P6-E3E"/>
+                    </constraints>
+                </view>
             </objects>
             <point key="canvasLocation" x="759" y="100"/>
         </scene>

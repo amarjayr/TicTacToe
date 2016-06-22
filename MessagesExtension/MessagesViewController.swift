@@ -57,6 +57,7 @@ class MessagesViewController: MSMessagesAppViewController {
                     fatalError("Not a participant in the game")
                 }
             #endif
+            
         } else {
             let game = TicTacToe(message: conversation.selectedMessage) ?? TicTacToe(player: Player(uuid: conversation.localParticipantIdentifier.uuidString, color: #colorLiteral(red: 0.3607843137, green: 0.6235294118, blue: 0.9607843137, alpha: 1)), opponent: Player(uuid: conversation.remoteParticipantIdentifiers[0].uuidString, color: #colorLiteral(red: 0.9607843137, green: 0.3607843137, blue: 0.6235294118, alpha: 1)))
 
@@ -149,5 +150,33 @@ extension MessagesViewController: GameViewControllerDelegate {
         }
 
         dismiss()
+    }
+    
+    func requestNewGame() {
+        // Remove any existing child controllers.
+        for child in childViewControllers {
+            child.willMove(toParentViewController: nil)
+            child.view.removeFromSuperview()
+            child.removeFromParentViewController()
+        }
+        
+        let game = TicTacToe(player: Player(uuid: activeConversation!.localParticipantIdentifier.uuidString, color: #colorLiteral(red: 0.3607843137, green: 0.6235294118, blue: 0.9607843137, alpha: 1)), opponent: Player(uuid: activeConversation!.remoteParticipantIdentifiers[0].uuidString, color: #colorLiteral(red: 0.9607843137, green: 0.3607843137, blue: 0.6235294118, alpha: 1)))
+        
+        let controller = instantiateGameViewController(with: game)
+        
+        // Embed the new controller.
+        addChildViewController(controller)
+        
+        controller.view.frame = view.bounds
+        controller.view.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(controller.view)
+        
+        controller.view.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
+        controller.view.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
+        controller.view.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+        controller.view.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+        
+        controller.didMove(toParentViewController: self)
+        
     }
 }
