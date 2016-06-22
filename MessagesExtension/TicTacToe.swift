@@ -49,6 +49,12 @@ struct Player: CustomStringConvertible {
     }
 }
 
+extension Player: Hashable {
+    var hashValue: Int {
+        return self.uuid.hashValue
+    }
+}
+
 extension Player: Equatable {}
 
 func == (lhs: Player, rhs: Player) -> Bool {
@@ -60,7 +66,7 @@ class TicTacToe {
     private var cacheWinner: Player?
 
     let player: Player!
-    let opponent: Player!
+    let opponents: [Player]!
 
     var size: Int {
         return grid.count
@@ -99,16 +105,16 @@ class TicTacToe {
 
     // MARK: Initializers
 
-    init(player currentPlayer: Player, opponent opponentPlayer: Player, size: Int = 3) {
+    init(player currentPlayer: Player, opponents opponentPlayers: [Player], size: Int = 3) {
         player = currentPlayer
-        opponent = opponentPlayer
+        opponents = opponentPlayers
 
         grid = Array(repeatElement(Array(repeatElement(TTTCellState.empty, count: size)), count: size))
     }
 
-    private init(player currentPlayer: Player, opponent opponentPlayer: Player, board predefinedBoard: [[TTTCellState]]) {
+    private init(player currentPlayer: Player, opponents opponentPlayers: [Player], board predefinedBoard: [[TTTCellState]]) {
         player = currentPlayer
-        opponent = opponentPlayer
+        opponents = opponentPlayers
 
         grid = predefinedBoard
     }
@@ -123,8 +129,16 @@ class TicTacToe {
         guard winner == nil else {
             throw TTTError.gameDone
         }
+        
+        var round = 0
+        for p in opponents {
+            let r = moveCount(for: p)
+            if (r > round) {
+                round = r
+            }
+        }
 
-        guard moveCount(for: opponent) >= moveCount(for: player) else {
+        guard round >= moveCount(for: player) else {
             throw TTTError.notPlayerTurn
         }
 
@@ -178,14 +192,22 @@ class TicTacToe {
 
     private func checkWinner() -> Player? {
         var userOwned = Array(repeating: 0, count: size*2)
-        var opponentOwned = Array(repeating: 0, count: size*2)
-
+        var opponentsOwned = [Player: [Int]]()
+        
+        for opponent in opponents {
+            opponentsOwned[opponent] = Array(repeating: 0, count: size*2)
+        }
+        
         for i in 0..<size {
             for j in 0..<size {
                 if case .occupied(let user) = self[i, j] where user == player {
                     userOwned[j] += 1
-                } else if case .occupied(let user) = self[i, j] where user == opponent {
-                    opponentOwned[j] += 1
+                } else if case .occupied(let user) = self[i, j] {
+                    if opponentsOwned[user]?[j] == nil {
+                        opponentsOwned[user]![j] = 0
+                    }
+                    
+                    opponentsOwned[user]![j] += 1
                 }
             }
         }
@@ -194,8 +216,12 @@ class TicTacToe {
             for i in 0..<size {
                 if case .occupied(let user) = self[i, j] where user == player {
                     userOwned[i+size] += 1
-                } else if case .occupied(let user) = self[i, j] where user == opponent {
-                    opponentOwned[i+size] += 1
+                } else if case .occupied(let user) = self[i, j] {
+                    if opponentsOwned[user]?[i+size] == nil {
+                        opponentsOwned[user]?[i+size] = 0
+                    }
+                    
+                    opponentsOwned[user]![i+size] += 1
                 }
             }
         }
@@ -206,10 +232,12 @@ class TicTacToe {
             }
         }
 
-        for numberOwned in opponentOwned {
-            if numberOwned == requiredInARow {
-                cacheWinner = opponent
-                return opponent
+        for (opponentP, array) in opponentsOwned {
+            for numberOwned in array {
+                if numberOwned == requiredInARow {
+                    cacheWinner = opponentP
+                    return opponentP
+                }
             }
         }
 
@@ -218,8 +246,12 @@ class TicTacToe {
     
     private func checkDiagonal() -> Player? {
         var rowsCurrent = [Int:Int]()
-        var rowsOpponent = [Int:Int]()
-
+        
+        var rowsOpponents = [Player: [Int]]()
+        
+        for opponent in opponents {
+            rowsOpponents[opponent] = Array(repeating: 0, count: (2*size-1))
+        }
         
         for slice in 0..<(2*size-1) {
             let z = slice < size ? 0 : slice - size + 1
@@ -232,12 +264,12 @@ class TicTacToe {
                     }
                     
                     rowsCurrent[slice]! += 1
-                } else if case .occupied(let user) = self[j, slice - j] where user == opponent  {
-                    if rowsOpponent[slice] == nil {
-                        rowsOpponent[slice] = 0
+                } else if case .occupied(let user) = self[j, slice - j]   {
+                    if rowsOpponents[user]?[slice] == nil {
+                        rowsOpponents[user]![slice] = 0
                     }
                     
-                    rowsOpponent[slice]! += 1
+                    rowsOpponents[user]![slice] += 1
                 }
             }
         }
@@ -248,9 +280,11 @@ class TicTacToe {
             }
         }
         
-        for (_, len) in rowsOpponent {
-            if len >= requiredInARow {
-                return opponent
+        for (opponentP, array) in rowsOpponents {
+            for numberOwned in array {
+                if numberOwned >= requiredInARow {
+                    return opponentP
+                }
             }
         }
         
@@ -259,7 +293,11 @@ class TicTacToe {
     
     private func checkAntidiagonal() -> Player? {
         var rowsCurrent = [Int:Int]()
-        var rowsOpponent = [Int:Int]()
+        var rowsOpponents = [Player: [Int]]()
+        
+        for opponent in opponents {
+            rowsOpponents[opponent] = Array(repeating: 0, count: (2*size-1))
+        }
         
         
         for slice in 0..<(2*size-1) {
@@ -274,12 +312,12 @@ class TicTacToe {
                     }
                     
                     rowsCurrent[slice]! += 1
-                } else if case .occupied(let user) = self[j, (size-1)-(slice-j)] where user == opponent  {
-                    if rowsOpponent[slice] == nil {
-                        rowsOpponent[slice] = 0
+                } else if case .occupied(let user) = self[j, (size-1)-(slice-j)] {
+                    if rowsOpponents[user]?[slice] == nil {
+                        rowsOpponents[user]?[slice] = 0
                     }
                     
-                    rowsOpponent[slice]! += 1
+                    rowsOpponents[user]![slice] += 1
                 }
             }
         }
@@ -290,9 +328,11 @@ class TicTacToe {
             }
         }
         
-        for (_, len) in rowsOpponent {
-            if len >= requiredInARow {
-                return opponent
+        for (opponentP, array) in rowsOpponents {
+            for numberOwned in array {
+                if numberOwned >= requiredInARow {
+                    return opponentP
+                }
             }
         }
         
@@ -302,7 +342,7 @@ class TicTacToe {
     // MARK: Utility
 
     func moveCount(for player: Player?) -> Int {
-        guard player == self.player || player == opponent else {
+        guard player == self.player || opponents.contains(player!) else {
             fatalError("Player not part of game.")
         }
 
@@ -325,6 +365,20 @@ extension TicTacToe {
                 }
 
                 return array
+            }), options: .prettyPrinted)
+            return NSString(data: data, encoding: String.Encoding.utf8.rawValue)! as String
+        } catch {
+            return nil
+        }
+    }
+    
+    func opponentsToJSON() -> String? {
+        var playersArray: [Player] = opponents
+        playersArray.append(player)
+        
+        do {
+            let data = try JSONSerialization.data(withJSONObject: playersArray.map({ (value: Player) -> String in
+                return String(value)
             }), options: .prettyPrinted)
             return NSString(data: data, encoding: String.Encoding.utf8.rawValue)! as String
         } catch {
@@ -360,38 +414,67 @@ extension TicTacToe {
             fatalError("boardFrom, unkown error")
         }
     }
+    
+    static func opponentsFromJSON(json string: String) -> [Player]? {
+        if let data = string.data(using: String.Encoding.utf8) {
+            do {
+                let json = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String]
+                
+                var returnGrid = [Player]()
+                
+                for playerStr in json! {
+                    returnGrid.append(Player(uuid: playerStr.components(separatedBy: ":/:")[0], color: UIColor(hex: playerStr.components(separatedBy: ":/:")[1])))
+                }
+                
+                return returnGrid
+            } catch let error as NSError {
+                fatalError("JSON PARSING ERROR: " + error.description)
+            }
+        } else {
+            fatalError("opponentsFrom, unkown error")
+        }
+    }
 }
 
 extension TicTacToe {
     var queryItems: [URLQueryItem] {
         var items = [URLQueryItem]()
-        items.append(URLQueryItem(name: "Player", value: player.description))
-        items.append(URLQueryItem(name: "Opponent", value: opponent.description))
+        items.append(URLQueryItem(name: "Opponent", value: opponentsToJSON()))
         items.append(URLQueryItem(name: "Board", value: boardToJSON()))
 
         return items
     }
 
-    convenience init?(queryItems: [URLQueryItem]) {
-        self.init(
-            player: Player(uuid: queryItems[1].value!.components(separatedBy: ":/:")[0], color: UIColor(hex: queryItems[1].value!.components(separatedBy: ":/:")[1])),
-            opponent: Player(uuid: queryItems[0].value!.components(separatedBy: ":/:")[0], color: UIColor(hex: queryItems[0].value!.components(separatedBy: ":/:")[1])),
-            board: TicTacToe.boardFrom(json: queryItems[2].value!)!)
+    convenience init?(queryItems: [URLQueryItem], current uuid: String) {
+        var opponents = TicTacToe.opponentsFromJSON(json: queryItems[0].value!)
+        var current: Player?
+        
+        #if (arch(i386) || arch(x86_64))
+            current = Player(uuid: opponents?[0].uuid, color: opponents?[0].color)
+            opponents?.remove(at: 0)
+        #endif
+        
+        opponents = opponents?.filter({ (value: Player) -> Bool in
+            if value.uuid != uuid {
+                return true
+            } else {
+                #if !(arch(i386) || arch(x86_64))
+                    current = value
+                #endif
+                return false
+            }
+        })
+        
+        self.init(player: current!, opponents: opponents!, board: TicTacToe.boardFrom(json: queryItems[1].value!)!)
     }
 }
 
 extension TicTacToe {
-    convenience init?(message: MSMessage?) {
+    convenience init?(message: MSMessage?, current uuid: String) {
         guard let messageURL = message?.url else { return nil }
-        guard let urlComponents = NSURLComponents(url: messageURL, resolvingAgainstBaseURL: false), var queryItems = urlComponents.queryItems else { return nil }
+        guard let urlComponents = NSURLComponents(url: messageURL, resolvingAgainstBaseURL: false), let queryItems = urlComponents.queryItems else { return nil }
 
-        #if !((arch(i386) || arch(x86_64)) && os(iOS))
-            if queryItems[0].value == message!.senderParticipantIdentifier.uuidString {
-                swap(&queryItems[0], &queryItems[1])
-            }
-        #endif
-
-        self.init(queryItems: queryItems)
+        self.init(queryItems: queryItems, current: uuid)
     }
 }
 
@@ -399,7 +482,7 @@ extension TicTacToe {
 extension TicTacToe: Equatable {}
 
 func == (lhs: TicTacToe, rhs: TicTacToe) -> Bool {
-    return lhs.player == rhs.player && lhs.opponent == rhs.opponent && lhs.boardToJSON() == rhs.boardToJSON()
+    return lhs.player == rhs.player && lhs.opponents == rhs.opponents && lhs.boardToJSON() == rhs.boardToJSON()
 }
 
 extension UIColor {

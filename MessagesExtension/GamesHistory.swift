@@ -27,7 +27,7 @@ struct GamesHistory {
         self.games = games
     }
 
-    static func load() -> GamesHistory {
+    static func load(for uuid: String) -> GamesHistory {
         var games = [TicTacToe]()
         let defaults = UserDefaults.standard()
 
@@ -36,14 +36,14 @@ struct GamesHistory {
                 guard let url = URL(string: urlString) else { return nil }
                 guard let components = URLComponents(url: url, resolvingAgainstBaseURL: false), queryItems = components.queryItems else { return nil }
 
-                return TicTacToe(queryItems: queryItems)
+                return TicTacToe(queryItems: queryItems, current: uuid)
             }
         }
 
         return GamesHistory(games: games)
     }
 
-    static func load(against opponent: String) -> GamesHistory {
+    /*static func load(for uuid: String, against opponent: String) -> GamesHistory {
         var games = [TicTacToe]()
         let defaults = UserDefaults.standard()
 
@@ -52,7 +52,7 @@ struct GamesHistory {
                 guard let url = URL(string: urlString) else { return nil }
                 guard let components = URLComponents(url: url, resolvingAgainstBaseURL: false), queryItems = components.queryItems else { return nil }
 
-                if let game = TicTacToe(queryItems: queryItems) where game.opponent.uuid == opponent {
+                if let game = TicTacToe(queryItems: queryItems, current: uuid) where game.opponent.uuid == opponent {
                     return game
                 } else {
                     return nil
@@ -62,7 +62,7 @@ struct GamesHistory {
         }
 
         return GamesHistory(games: games)
-    }
+    }*/
 
     func save() {
         let gamesToSave = games.suffix(GamesHistory.maximumHistorySize)

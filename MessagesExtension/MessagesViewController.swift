@@ -46,28 +46,40 @@ class MessagesViewController: MSMessagesAppViewController {
         // Determine the controller to present.
         let controller: UIViewController
         if presentationStyle == .compact {
-            //controller = instantiateGameHistoryViewController()            
-            let game = TicTacToe(message: conversation.selectedMessage) ?? TicTacToe(player: Player(uuid: conversation.localParticipantIdentifier.uuidString, color: #colorLiteral(red: 0.3607843137, green: 0.6235294118, blue: 0.9607843137, alpha: 1)), opponent: Player(uuid: conversation.remoteParticipantIdentifiers[0].uuidString, color: #colorLiteral(red: 0.9607843137, green: 0.3607843137, blue: 0.6235294118, alpha: 1)))
+            //controller = instantiateGameHistoryViewController()
+            var players = [Player]()
+            for participant in conversation.remoteParticipantIdentifiers {
+                players.append(Player(uuid: participant.uuidString, color: UIColor.random()))
+            }
 
+            let game = TicTacToe(message: conversation.selectedMessage, current: conversation.localParticipantIdentifier.uuidString) ?? TicTacToe(player:  Player(uuid: conversation.localParticipantIdentifier.uuidString, color: #colorLiteral(red: 0.3607843137, green: 0.6235294118, blue: 0.9607843137, alpha: 1)), opponents: players)
+            
+            
             controller = instantiateGameViewController(with: game)
             
             #if !((arch(i386) || arch(x86_64)) && os(iOS))
-                if game.player.uuid != conversation.localParticipantIdentifier.uuidString || game.opponent.uuid
+              /*  if game.player.uuid != conversation.localParticipantIdentifier.uuidString || game.opponent.uuid
                     != conversation.localParticipantIdentifier.uuidString {
                     fatalError("Not a participant in the game")
-                }
+                }*/
             #endif
             
         } else {
-            let game = TicTacToe(message: conversation.selectedMessage) ?? TicTacToe(player: Player(uuid: conversation.localParticipantIdentifier.uuidString, color: #colorLiteral(red: 0.3607843137, green: 0.6235294118, blue: 0.9607843137, alpha: 1)), opponent: Player(uuid: conversation.remoteParticipantIdentifiers[0].uuidString, color: #colorLiteral(red: 0.9607843137, green: 0.3607843137, blue: 0.6235294118, alpha: 1)))
+            var players = [Player]()
+            for participant in conversation.remoteParticipantIdentifiers {
+                players.append(Player(uuid: participant.uuidString, color: UIColor.random()))
+            }
+            
+            let game = TicTacToe(message: conversation.selectedMessage, current: conversation.localParticipantIdentifier.uuidString) ?? TicTacToe(player:  Player(uuid: conversation.localParticipantIdentifier.uuidString, color: #colorLiteral(red: 0.3607843137, green: 0.6235294118, blue: 0.9607843137, alpha: 1)), opponents: players)
+            
             
             controller = instantiateGameViewController(with: game)
 
             #if !((arch(i386) || arch(x86_64)) && os(iOS))
-                if game.player.uuid != conversation.localParticipantIdentifier.uuidString || game.opponent.uuid
+               /* if game.player.uuid != conversation.localParticipantIdentifier.uuidString || game.opponent.uuid
                     != conversation.localParticipantIdentifier.uuidString {
                     fatalError("Not a participant in the game")
-                }
+                }*/
             #endif
         }
 
@@ -144,16 +156,16 @@ extension MessagesViewController: GameViewControllerDelegate {
         }
 
         if game.winner != nil {
-            var history = GamesHistory.load()
-            history.append(game)
-            history.save()
+            //var history = GamesHistory.load()
+            //history.append(game)
+            //history.save()
         }
 
         dismiss()
     }
     
     func requestNewGame() {
-        // Remove any existing child controllers.
+        /*// Remove any existing child controllers.
         for child in childViewControllers {
             child.willMove(toParentViewController: nil)
             child.view.removeFromSuperview()
@@ -176,6 +188,15 @@ extension MessagesViewController: GameViewControllerDelegate {
         controller.view.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
         controller.view.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
         
-        controller.didMove(toParentViewController: self)
+        controller.didMove(toParentViewController: self)*/
+    }
+}
+
+extension UIColor {
+    static func random() -> UIColor{
+        let randomRed:CGFloat = CGFloat(drand48())
+        let randomGreen:CGFloat = CGFloat(drand48())
+        let randomBlue:CGFloat = CGFloat(drand48())
+        return UIColor(red: randomRed, green: randomGreen, blue: randomBlue, alpha: 1.0)
     }
 }

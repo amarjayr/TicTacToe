@@ -55,7 +55,7 @@ class GameViewController: UIViewController {
 
             if winner == game!.player {
                 gameDoneViewTitle.text = "You Win!"
-            } else if winner == game!.opponent {
+            } else if game!.opponents.contains(game!.winner!) {
                 gameDoneViewTitle.text = "You Lose."
             } else if winner.uuid == nil {
                 gameDoneViewTitle.text = "Draw."
