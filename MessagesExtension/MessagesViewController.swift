@@ -60,7 +60,7 @@ class MessagesViewController: MSMessagesAppViewController {
             
         } else {
             let game = TicTacToe(message: conversation.selectedMessage) ?? TicTacToe(player: Player(uuid: conversation.localParticipantIdentifier.uuidString, color: #colorLiteral(red: 0.3607843137, green: 0.6235294118, blue: 0.9607843137, alpha: 1)), opponent: Player(uuid: conversation.remoteParticipantIdentifiers[0].uuidString, color: #colorLiteral(red: 0.9607843137, green: 0.3607843137, blue: 0.6235294118, alpha: 1)))
-
+            
             controller = instantiateGameViewController(with: game)
 
             #if !((arch(i386) || arch(x86_64)) && os(iOS))

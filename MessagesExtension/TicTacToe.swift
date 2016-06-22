@@ -66,8 +66,14 @@ class TicTacToe {
         return grid.count
     }
 
+    private var requiredInRowCustom: Int?
     var requiredInARow: Int {
-        return size
+        get {
+            return requiredInRowCustom ?? size
+        }
+        set(value) {
+            requiredInRowCustom = value
+        }
     }
 
     var winner: Player? {
@@ -327,31 +333,32 @@ extension TicTacToe {
     }
 
     static func boardFrom(json string: String) -> [[TTTCellState]]? {
-        var returnGrid = Array(repeatElement(Array(repeatElement(TTTCellState.empty, count: 3)), count: 3))
-
         if let data = string.data(using: String.Encoding.utf8) {
             do {
                 let json = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [[String]]
                 let grid = json!
 
+                var returnGrid = Array(repeatElement(Array(repeatElement(TTTCellState.empty, count: grid.count)), count: grid.count))
+                
                 for i in 0..<grid.count {
                     for j in 0..<grid.count {
                         if grid[i][j] != "empty" {
                             var elComponents = grid[i][j].components(separatedBy: ":/:")
 
                             returnGrid[i][j] = TTTCellState.occupied( Player(uuid: elComponents[0], color: UIColor(hex: elComponents[1])))
+                        } else {
+                            returnGrid[i][j] = TTTCellState.empty
                         }
                     }
                 }
 
+                return returnGrid
             } catch let error as NSError {
                 fatalError("JSON PARSING ERROR: " + error.description)
             }
         } else {
             fatalError("boardFrom, unkown error")
         }
-
-        return returnGrid
     }
 }
 
