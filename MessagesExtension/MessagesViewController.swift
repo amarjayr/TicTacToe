@@ -177,6 +177,5 @@ extension MessagesViewController: GameViewControllerDelegate {
         controller.view.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
         
         controller.didMove(toParentViewController: self)
-        
     }
 }

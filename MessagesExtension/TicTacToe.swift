@@ -135,7 +135,7 @@ class TicTacToe {
         return self[x, y]
     }
 
-    // MARK: Winning/Game over cases
+    // MARK: Winning/Gameover checks
 
     private func checkWinnerAfterMove(row x: Int, column y: Int) -> Player? {
         guard x < size && y < size && x >= 0 && y >= 0 else {
@@ -161,30 +161,9 @@ class TicTacToe {
                 return player
             }
         }
-
-        var numberOwnedInDiagonal = 0
-        if x == y {
-            for i in 0..<size {
-                if case .occupied(let user) = self[i, i] where user == player {
-                    numberOwnedInDiagonal += 1
-                }
-                if numberOwnedInDiagonal == requiredInARow {
-                    return player
-                }
-            }
-        }
-
-        var numberOwnedInAntiDiagonal = 0
-        for i in 0..<size {
-            if case .occupied(let user) = self[i, (size-1)-i] where user == player {
-                numberOwnedInAntiDiagonal += 1
-            }
-            if numberOwnedInAntiDiagonal == requiredInARow {
-                return player
-            }
-        }
-
-        return nil
+        
+        // TODO: implement efficient diagonal/antidiagonal traversing base on certain diagonal
+        return checkDiagonal() ?? checkAntidiagonal()
     }
 
     private func isDraw() -> Bool {
@@ -228,44 +207,89 @@ class TicTacToe {
             }
         }
 
-        var numberOwnedInDiagonalForUser = 0
-        var numberOwnedInDiagonalForOpponent = 0
-        for i in 0..<size {
-            if case .occupied(let user) = self[i, i] where user == player {
-                numberOwnedInDiagonalForUser += 1
+        return checkDiagonal() ?? checkAntidiagonal()
+    }
+    
+    private func checkDiagonal() -> Player? {
+        var rowsCurrent = [Int:Int]()
+        var rowsOpponent = [Int:Int]()
+
+        
+        for slice in 0..<(2*size-1) {
+            let z = slice < size ? 0 : slice - size + 1
+            let j = z
+            
+            for j in j..<(slice-z)+1 {                
+                if case .occupied(let user) = self[j, slice - j] where user == player  {
+                    if rowsCurrent[slice] == nil {
+                        rowsCurrent[slice] = 0
+                    }
+                    
+                    rowsCurrent[slice]! += 1
+                } else if case .occupied(let user) = self[j, slice - j] where user == opponent  {
+                    if rowsOpponent[slice] == nil {
+                        rowsOpponent[slice] = 0
+                    }
+                    
+                    rowsOpponent[slice]! += 1
+                }
             }
-            if case .occupied(let user) = self[i, i] where user == opponent {
-                numberOwnedInDiagonalForOpponent += 1
-            }
-            if numberOwnedInDiagonalForUser == requiredInARow {
-                cacheWinner = player
+        }
+        
+        for (_, len) in rowsCurrent {
+            if len >= requiredInARow {
                 return player
             }
-            if numberOwnedInDiagonalForOpponent == requiredInARow {
-                cacheWinner = opponent
+        }
+        
+        for (_, len) in rowsOpponent {
+            if len >= requiredInARow {
                 return opponent
             }
         }
-
-        var numberOwnedInAntiDiagonalForUser = 0
-        var numberOwnedInAntiDiagonalForOpponent = 0
-        for i in 0..<size {
-            if case .occupied(let user) = self[i, (size-1)-i] where user == player {
-                numberOwnedInAntiDiagonalForUser += 1
+        
+        return nil
+    }
+    
+    private func checkAntidiagonal() -> Player? {
+        var rowsCurrent = [Int:Int]()
+        var rowsOpponent = [Int:Int]()
+        
+        
+        for slice in 0..<(2*size-1) {
+            let z = slice < size ? 0 : slice - size + 1
+            let j = z
+            
+            for j in j..<(slice-z)+1 {
+                
+                if case .occupied(let user) = self[j, (size-1)-(slice-j)] where user == player  {
+                    if rowsCurrent[slice] == nil {
+                        rowsCurrent[slice] = 0
+                    }
+                    
+                    rowsCurrent[slice]! += 1
+                } else if case .occupied(let user) = self[j, (size-1)-(slice-j)] where user == opponent  {
+                    if rowsOpponent[slice] == nil {
+                        rowsOpponent[slice] = 0
+                    }
+                    
+                    rowsOpponent[slice]! += 1
+                }
             }
-            if case .occupied(let user) = self[i, (size-1)-i] where user == opponent {
-                numberOwnedInAntiDiagonalForOpponent += 1
-            }
-            if numberOwnedInAntiDiagonalForUser == requiredInARow {
-                cacheWinner = player
+        }
+        
+        for (_, len) in rowsCurrent {
+            if len >= requiredInARow {
                 return player
             }
-            if numberOwnedInAntiDiagonalForOpponent == requiredInARow {
-                cacheWinner = opponent
+        }
+        
+        for (_, len) in rowsOpponent {
+            if len >= requiredInARow {
                 return opponent
             }
         }
-
+        
         return nil
     }
 
