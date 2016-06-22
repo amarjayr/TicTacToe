@@ -11,7 +11,6 @@ import Messages
 
 class MessagesViewController: MSMessagesAppViewController {
     //var boardView : UIView?
-    var game: TicTacToe?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -48,13 +47,27 @@ class MessagesViewController: MSMessagesAppViewController {
         let controller: UIViewController
         if presentationStyle == .compact {
             //controller = instantiateGameHistoryViewController()            
-            let game = TicTacToe(message: conversation.selectedMessage) ?? TicTacToe(player: conversation.localParticipantIdentifier.uuidString, opponent: conversation.remoteParticipantIdentifiers[0].uuidString)
+            let game = TicTacToe(message: conversation.selectedMessage) ?? TicTacToe(player: Player(uuid: conversation.localParticipantIdentifier.uuidString, color: #colorLiteral(red: 0.3607843137, green: 0.6235294118, blue: 0.9607843137, alpha: 1)), opponent: Player(uuid: conversation.remoteParticipantIdentifiers[0].uuidString, color: #colorLiteral(red: 0.9607843137, green: 0.3607843137, blue: 0.6235294118, alpha: 1)))
 
             controller = instantiateGameViewController(with: game)
+            
+            #if !((arch(i386) || arch(x86_64)) && os(iOS))
+                if game.player.uuid != conversation.localParticipantIdentifier.uuidString || game.opponent.uuid
+                    != conversation.localParticipantIdentifier.uuidString {
+                    fatalError("Not a participant in the game")
+                }
+            #endif
         } else {
-            let game = TicTacToe(message: conversation.selectedMessage) ?? TicTacToe(player: conversation.localParticipantIdentifier.uuidString, opponent: conversation.remoteParticipantIdentifiers[0].uuidString)
+            let game = TicTacToe(message: conversation.selectedMessage) ?? TicTacToe(player: Player(uuid: conversation.localParticipantIdentifier.uuidString, color: #colorLiteral(red: 0.3607843137, green: 0.6235294118, blue: 0.9607843137, alpha: 1)), opponent: Player(uuid: conversation.remoteParticipantIdentifiers[0].uuidString, color: #colorLiteral(red: 0.9607843137, green: 0.3607843137, blue: 0.6235294118, alpha: 1)))
 
             controller = instantiateGameViewController(with: game)
+
+            #if !((arch(i386) || arch(x86_64)) && os(iOS))
+                if game.player.uuid != conversation.localParticipantIdentifier.uuidString || game.opponent.uuid
+                    != conversation.localParticipantIdentifier.uuidString {
+                    fatalError("Not a participant in the game")
+                }
+            #endif
         }
 
         // Remove any existing child controllers.

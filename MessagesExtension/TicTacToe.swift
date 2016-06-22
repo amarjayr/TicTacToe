@@ -11,14 +11,14 @@ import Messages
 
 enum TTTCellState: CustomStringConvertible {
     case empty
-    case occupied(String)
+    case occupied(Player)
 
     var description: String {
         switch self {
         case empty:
             return "empty"
-        case occupied(let uuid):
-            return uuid
+        case occupied(let player):
+            return player.description
         }
     }
 }
@@ -27,7 +27,7 @@ enum TTTError: ErrorProtocol, CustomStringConvertible {
     case positionOccupied
     case notPlayerTurn
     case gameDone
-    
+
     var description: String {
         switch self {
         case positionOccupied:
@@ -40,12 +40,27 @@ enum TTTError: ErrorProtocol, CustomStringConvertible {
     }
 }
 
+struct Player: CustomStringConvertible {
+    var uuid: String!
+    var color: UIColor!
+
+    var description: String {
+        return uuid! + ":/:" + color.hexString(includeAlpha: false)
+    }
+}
+
+extension Player: Equatable {}
+
+func == (lhs: Player, rhs: Player) -> Bool {
+    return lhs.uuid == rhs.uuid
+}
+
 class TicTacToe {
     private var grid: [[TTTCellState]]
-    private var cacheWinner: String?
+    private var cacheWinner: Player?
 
-    var player: String?
-    var opponent: String?
+    let player: Player!
+    let opponent: Player!
 
     var size: Int {
         return grid.count
@@ -55,13 +70,13 @@ class TicTacToe {
         return size
     }
 
-    var winner: String? {
+    var winner: Player? {
         if let w = cacheWinner {
             return w
         } else if let w = checkWinner() {
             return w
         } else if isDraw() {
-            return ""
+            return Player()
         } else {
             return nil
         }
@@ -78,16 +93,16 @@ class TicTacToe {
 
     // MARK: Initializers
 
-    init(player currentUUID: String, opponent opponentUUID: String, size: Int = 3) {
-        player = currentUUID
-        opponent = opponentUUID
+    init(player currentPlayer: Player, opponent opponentPlayer: Player, size: Int = 3) {
+        player = currentPlayer
+        opponent = opponentPlayer
 
         grid = Array(repeatElement(Array(repeatElement(TTTCellState.empty, count: size)), count: size))
     }
 
-    private init(player uuid: String, opponent player2: String, board predefinedBoard: [[TTTCellState]]) {
-        player = uuid
-        opponent = player2
+    private init(player currentPlayer: Player, opponent opponentPlayer: Player, board predefinedBoard: [[TTTCellState]]) {
+        player = currentPlayer
+        opponent = opponentPlayer
 
         grid = predefinedBoard
     }
@@ -95,11 +110,15 @@ class TicTacToe {
     // MARK: Square manipulation
 
     func selectCell(row x: Int, column y: Int) throws {
-        if winner != nil {
+        guard x < size && y < size && x >= 0 && y >= 0 else {
+            fatalError("Coordinates not on grid")
+        }
+
+        guard winner == nil else {
             throw TTTError.gameDone
         }
 
-        if moveCount(for: opponent) < moveCount(for: player) {
+        guard moveCount(for: opponent) >= moveCount(for: player) else {
             throw TTTError.notPlayerTurn
         }
 
@@ -118,7 +137,11 @@ class TicTacToe {
 
     // MARK: Winning/Game over cases
 
-    private func checkWinnerAfterMove(row x: Int, column y: Int) -> String? {
+    private func checkWinnerAfterMove(row x: Int, column y: Int) -> Player? {
+        guard x < size && y < size && x >= 0 && y >= 0 else {
+            fatalError("Coordinates not on grid")
+        }
+
         var numberOwnedInColumn = 0
         for i in 0..<size {
             if case .occupied(let user) = self[x, i] where user == player {
@@ -168,7 +191,7 @@ class TicTacToe {
         return moveCount(for: player!) == Int(pow(Decimal(size), 2) - 1)
     }
 
-    private func checkWinner() -> String? {
+    private func checkWinner() -> Player? {
         var userOwned = Array(repeating: 0, count: size*2)
         var opponentOwned = Array(repeating: 0, count: size*2)
 
@@ -248,7 +271,11 @@ class TicTacToe {
 
     // MARK: Utility
 
-    func moveCount(for player: String?) -> Int {
+    func moveCount(for player: Player?) -> Int {
+        guard player == self.player || player == opponent else {
+            fatalError("Player not part of game.")
+        }
+
         return grid.flatMap { $0 }.filter { (element) -> Bool in
             if case .occupied(let user) = element {
                 return user == player
@@ -286,7 +313,9 @@ extension TicTacToe {
                 for i in 0..<grid.count {
                     for j in 0..<grid.count {
                         if grid[i][j] != "empty" {
-                            returnGrid[i][j] = TTTCellState.occupied(grid[i][j])
+                            var elComponents = grid[i][j].components(separatedBy: ":/:")
+
+                            returnGrid[i][j] = TTTCellState.occupied( Player(uuid: elComponents[0], color: UIColor(hex: elComponents[1])))
                         }
                     }
                 }
@@ -305,22 +334,31 @@ extension TicTacToe {
 extension TicTacToe {
     var queryItems: [URLQueryItem] {
         var items = [URLQueryItem]()
-        items.append(URLQueryItem(name: "Player", value: player))
-        items.append(URLQueryItem(name: "Opponent", value: opponent))
+        items.append(URLQueryItem(name: "Player", value: player.description))
+        items.append(URLQueryItem(name: "Opponent", value: opponent.description))
         items.append(URLQueryItem(name: "Board", value: boardToJSON()))
 
         return items
     }
 
     convenience init?(queryItems: [URLQueryItem]) {
-        self.init(player: queryItems[1].value!, opponent: queryItems[0].value!, board: TicTacToe.boardFrom(json: queryItems[2].value!)!)
+        self.init(
+            player: Player(uuid: queryItems[1].value!.components(separatedBy: ":/:")[0], color: UIColor(hex: queryItems[1].value!.components(separatedBy: ":/:")[1])),
+            opponent: Player(uuid: queryItems[0].value!.components(separatedBy: ":/:")[0], color: UIColor(hex: queryItems[0].value!.components(separatedBy: ":/:")[1])),
+            board: TicTacToe.boardFrom(json: queryItems[2].value!)!)
     }
 }
 
 extension TicTacToe {
     convenience init?(message: MSMessage?) {
         guard let messageURL = message?.url else { return nil }
-        guard let urlComponents = NSURLComponents(url: messageURL, resolvingAgainstBaseURL: false), queryItems = urlComponents.queryItems else { return nil }
+        guard let urlComponents = NSURLComponents(url: messageURL, resolvingAgainstBaseURL: false), var queryItems = urlComponents.queryItems else { return nil }
+
+        #if !((arch(i386) || arch(x86_64)) && os(iOS))
+            if queryItems[0].value == message!.senderParticipantIdentifier.uuidString {
+                swap(&queryItems[0], &queryItems[1])
+            }
+        #endif
 
         self.init(queryItems: queryItems)
     }
@@ -331,4 +369,35 @@ extension TicTacToe: Equatable {}
 
 func == (lhs: TicTacToe, rhs: TicTacToe) -> Bool {
     return lhs.player == rhs.player && lhs.opponent == rhs.opponent && lhs.boardToJSON() == rhs.boardToJSON()
+}
+
+extension UIColor {
+    public func hexString(includeAlpha: Bool) -> String {
+        var r: CGFloat = 0
+        var g: CGFloat = 0
+        var b: CGFloat = 0
+        var a: CGFloat = 0
+        self.getRed(&r, green: &g, blue: &b, alpha: &a)
+
+        if includeAlpha {
+            return String(format: "#%02X%02X%02X%02X", Int(r * 255), Int(g * 255), Int(b * 255), Int(a * 255))
+        } else {
+            return String(format: "#%02X%02X%02X", Int(r * 255), Int(g * 255), Int(b * 255))
+        }
+    }
+
+    public convenience init(hex: String, alpha: CGFloat? = 1.0) {
+        var hexInt: UInt32 = 0
+        let scanner: Scanner = Scanner(string: hex)
+        scanner.charactersToBeSkipped = CharacterSet(charactersIn: "#")
+        scanner.scanHexInt32(&hexInt)
+
+        let hexint = Int(hexInt)
+        let red = CGFloat((hexint & 0xff0000) >> 16) / 255.0
+        let green = CGFloat((hexint & 0xff00) >> 8) / 255.0
+        let blue = CGFloat((hexint & 0xff) >> 0) / 255.0
+        let alpha = alpha!
+
+        self.init(red: red, green: green, blue: blue, alpha: alpha)
+    }
 }

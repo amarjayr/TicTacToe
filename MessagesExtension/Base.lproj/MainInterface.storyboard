@@ -3,6 +3,8 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11103.10"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -39,8 +41,7 @@
                         <subviews>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="7fJ-Pc-xAQ" customClass="GameView" customModule="MessagesExtension" customModuleProvider="target">
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="200" id="LT3-DT-7lI"/>
-                                    <constraint firstAttribute="width" constant="200" id="RJu-g0-ggI"/>
+                                    <constraint firstAttribute="width" secondItem="7fJ-Pc-xAQ" secondAttribute="height" multiplier="1:1" id="QBN-hS-Khp"/>
                                 </constraints>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="L2C-44-jHr">
                                     <size key="itemSize" width="50" height="50"/>
@@ -62,19 +63,18 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="7fJ-Pc-xAQ" firstAttribute="leading" secondItem="BXL-xy-qHd" secondAttribute="leadingMargin" constant="20" id="8fz-ns-SDv"/>
                             <constraint firstItem="7fJ-Pc-xAQ" firstAttribute="centerY" secondItem="BXL-xy-qHd" secondAttribute="centerY" id="TKL-4f-VWH"/>
-                            <constraint firstItem="7fJ-Pc-xAQ" firstAttribute="centerX" secondItem="BXL-xy-qHd" secondAttribute="centerX" id="jOs-NG-8Gn"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="7fJ-Pc-xAQ" secondAttribute="trailing" constant="20" id="ruf-qY-Ddj"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="gameView" destination="7fJ-Pc-xAQ" id="DCp-Yy-GpP"/>
-                        <outlet property="gameViewHeightConstraint" destination="LT3-DT-7lI" id="11h-su-kyj"/>
-                        <outlet property="gameViewWithConstraint" destination="RJu-g0-ggI" id="AYE-py-bwY"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="wN9-Hb-heq" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="816" y="132"/>
+            <point key="canvasLocation" x="759" y="100"/>
         </scene>
     </scenes>
 </document>

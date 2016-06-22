@@ -35,11 +35,11 @@ class GameViewController: UIViewController {
         gameView?.dataSource = self
 
         let layout = gameView?.collectionViewLayout as? UICollectionViewFlowLayout
-        layout!.minimumInteritemSpacing = 1.0
-        layout!.minimumLineSpacing = 2.0
+        layout!.minimumInteritemSpacing = 10.0
+        layout!.minimumLineSpacing = 17.0
 
-        self.view.backgroundColor = #colorLiteral(red: 0.9607843137, green: 0.7960784314, blue: 0.3607843137, alpha: 1)
-        self.gameView!.backgroundColor = #colorLiteral(red: 0.6823529412, green: 0.5058823529, blue: 0.03921568627, alpha: 1)
+        self.view.backgroundColor = #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1)
+        self.gameView?.backgroundColor = #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1)
     }
 
     override func viewDidLayoutSubviews() {
@@ -68,7 +68,7 @@ class GameViewController: UIViewController {
                     winnerLabel.text = "You won!"
                 } else if winner == game!.opponent {
                     winnerLabel.text = "You lost."
-                } else if winner == "" {
+                } else if winner.uuid == nil {
                     winnerLabel.text = "Draw!"
                 }
 
@@ -93,13 +93,16 @@ extension GameViewController: UICollectionViewDataSource, UICollectionViewDelega
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = gameView!.dequeueReusableCell(withReuseIdentifier: "TicTacToeCell", for: indexPath)
 
-        if case .occupied(let user) = game![indexPath.row%(game?.size)!, Int(floor(Double(indexPath.row/(game?.size)!)))] where user == game!.player {
-            cell.contentView.backgroundColor = #colorLiteral(red: 0.03137254902, green: 0.4039215686, blue: 0.5333333333, alpha: 1)
-        } else if case .occupied(let user) = game![indexPath.row%(game?.size)!, Int(floor(Double(indexPath.row/(game?.size)!)))] where user == game!.opponent {
-            cell.contentView.backgroundColor = #colorLiteral(red: 0.8666666667, green: 0.1098039216, blue: 0.1019607843, alpha: 1)
+        if case .occupied(let user) = game![indexPath.row%(game?.size)!, Int(floor(Double(indexPath.row/(game?.size)!)))] {
+            cell.contentView.backgroundColor = user.color
         } else {
-            cell.contentView.backgroundColor = #colorLiteral(red: 0.9607843137, green: 0.7960784314, blue: 0.3607843137, alpha: 1)
+            cell.contentView.backgroundColor = #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1)
+
+            cell.layer.borderColor = #colorLiteral(red: 0.9607843137, green: 0.6980392157, blue: 0.3607843137, alpha: 1).cgColor
+            cell.layer.borderWidth = 3
         }
+
+        cell.layer.cornerRadius = cell.frame.height/2
 
         return cell
     }
@@ -107,7 +110,7 @@ extension GameViewController: UICollectionViewDataSource, UICollectionViewDelega
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let layout = collectionViewLayout as? UICollectionViewFlowLayout
 
-        return CGSize(width: floor(gameView!.bounds.size.width / CGFloat(game!.size))-layout!.minimumInteritemSpacing, height: floor(gameView!.bounds.size.height / CGFloat(game!.size)))
+        return CGSize(width: floor(gameView!.bounds.size.width / CGFloat(game!.size))-layout!.minimumInteritemSpacing, height: floor(gameView!.bounds.size.width / CGFloat(game!.size))-layout!.minimumInteritemSpacing)
     }
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
@@ -117,6 +120,7 @@ extension GameViewController: UICollectionViewDataSource, UICollectionViewDelega
         do {
             try game!.selectCell(row: row, column: column)
             collectionView.reloadItems(at: [indexPath])
+
             delegate!.gameViewController(self, renderedImage: self.gameView!.createImage())
         } catch TTTError.positionOccupied {
             print("POSITION OCCUPIED")

@@ -52,7 +52,7 @@ struct GamesHistory {
                 guard let url = URL(string: urlString) else { return nil }
                 guard let components = URLComponents(url: url, resolvingAgainstBaseURL: false), queryItems = components.queryItems else { return nil }
 
-                if let game = TicTacToe(queryItems: queryItems) where game.opponent == opponent {
+                if let game = TicTacToe(queryItems: queryItems) where game.opponent.uuid == opponent {
                     return game
                 } else {
                     return nil
