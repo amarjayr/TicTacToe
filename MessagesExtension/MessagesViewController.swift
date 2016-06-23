@@ -9,9 +9,6 @@
 import UIKit
 import Messages
 
-// swiftlint:disable line_length
-// swiftlint:disable trailing_whitespace
-
 class MessagesViewController: MSMessagesAppViewController {
     //var boardView : UIView?
 

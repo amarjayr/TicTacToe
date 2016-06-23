@@ -9,9 +9,6 @@
 import Foundation
 import Messages
 
-// swiftlint:disable line_length
-// swiftlint:disable trailing_whitespace
-
 enum TTTCellState: CustomStringConvertible {
     case empty
     case occupied(Player)

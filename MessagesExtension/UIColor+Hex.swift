@@ -9,9 +9,6 @@
 import Foundation
 import UIKit
 
-// swiftlint:disable line_length
-// swiftlint:disable trailing_whitespace
-
 extension UIColor {
     public func hexString(includeAlpha: Bool) -> String {
         var r: CGFloat = 0

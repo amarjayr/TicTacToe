@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		09091A1A1D1CA81F0024BDAF /* UIColor+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09091A191D1CA81F0024BDAF /* UIColor+Hex.swift */; };
+		09091A1C1D1CAAB20024BDAF /* .swiftlint.yml in Resources */ = {isa = PBXBuildFile; fileRef = 09091A1B1D1CAAB20024BDAF /* .swiftlint.yml */; };
 		094C286F1D11D59100593205 /* TicTacToe.swift in Sources */ = {isa = PBXBuildFile; fileRef = 094C286E1D11D59100593205 /* TicTacToe.swift */; };
 		0973C5E61D15173200528E5F /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0973C5E51D15173200528E5F /* GameViewController.swift */; };
 		0973C5E81D151C5200528E5F /* GameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0973C5E71D151C5200528E5F /* GameView.swift */; };
@@ -47,6 +48,7 @@
 
 /* Begin PBXFileReference section */
 		09091A191D1CA81F0024BDAF /* UIColor+Hex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+Hex.swift"; sourceTree = "<group>"; };
+		09091A1B1D1CAAB20024BDAF /* .swiftlint.yml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .swiftlint.yml; sourceTree = "<group>"; };
 		094C286E1D11D59100593205 /* TicTacToe.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TicTacToe.swift; sourceTree = "<group>"; };
 		0973C5E51D15173200528E5F /* GameViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameViewController.swift; sourceTree = "<group>"; };
 		0973C5E71D151C5200528E5F /* GameView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameView.swift; sourceTree = "<group>"; };
@@ -126,6 +128,7 @@
 				094C286E1D11D59100593205 /* TicTacToe.swift */,
 				09091A191D1CA81F0024BDAF /* UIColor+Hex.swift */,
 				09A9C43C1D14C4FF0040BBFC /* GamesHistory.swift */,
+				09091A1B1D1CAAB20024BDAF /* .swiftlint.yml */,
 			);
 			path = MessagesExtension;
 			sourceTree = "<group>";
@@ -179,12 +182,12 @@
 				ORGANIZATIONNAME = amarjayr;
 				TargetAttributes = {
 					09B2DA7B1D1114A800417BEF = {
-						DevelopmentTeam = 7246K2YF4X;
-						DevelopmentTeamName = "Sriram RAMACHANDRAN";
+						DevelopmentTeam = BW8E2XTFK5;
+						DevelopmentTeamName = "Amar Ramachandran (Personal Team)";
 					};
 					09B2DA851D1114AA00417BEF = {
-						DevelopmentTeam = 7246K2YF4X;
-						DevelopmentTeamName = "Sriram RAMACHANDRAN";
+						DevelopmentTeam = BW8E2XTFK5;
+						DevelopmentTeamName = "Amar Ramachandran (Personal Team)";
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -222,6 +225,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				09091A1C1D1CAAB20024BDAF /* .swiftlint.yml in Resources */,
 				09B2DA941D1114AA00417BEF /* Assets.xcassets in Resources */,
 				09B2DA921D1114AA00417BEF /* MainInterface.storyboard in Resources */,
 			);
@@ -375,7 +379,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = MessagesExtension/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.amarjayr.TicTacToe.MessagesExtension;
+				PRODUCT_BUNDLE_IDENTIFIER = com.amarjayr.tictac.MessagesExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 3.0;
@@ -389,7 +393,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = MessagesExtension/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.amarjayr.TicTacToe.MessagesExtension;
+				PRODUCT_BUNDLE_IDENTIFIER = com.amarjayr.tictac.MessagesExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 3.0;
@@ -403,7 +407,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = TicTacToe/Info.plist;
-				PRODUCT_BUNDLE_IDENTIFIER = com.amarjayr.TicTacToe;
+				PRODUCT_BUNDLE_IDENTIFIER = com.amarjayr.tictac;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -417,7 +421,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = TicTacToe/Info.plist;
-				PRODUCT_BUNDLE_IDENTIFIER = com.amarjayr.TicTacToe;
+				PRODUCT_BUNDLE_IDENTIFIER = com.amarjayr.tictac;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

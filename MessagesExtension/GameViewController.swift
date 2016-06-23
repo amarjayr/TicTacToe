@@ -8,9 +8,6 @@
 
 import UIKit
 
-// swiftlint:disable line_length
-// swiftlint:disable trailing_whitespace
-
 class GameViewController: UIViewController {
     static let storyboardIdentifier = "GameViewController"
 

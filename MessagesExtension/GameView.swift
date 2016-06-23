@@ -8,9 +8,6 @@
 
 import UIKit
 
-// swiftlint:disable line_length
-// swiftlint:disable trailing_whitespace
-
 class GameView: UICollectionView {
     var game: TicTacToe?
 

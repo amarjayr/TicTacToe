@@ -8,9 +8,6 @@
 
 import Foundation
 
-// swiftlint:disable line_length
-// swiftlint:disable trailing_whitespace
-
 struct GamesHistory {
     private static let maximumHistorySize = 5
 
