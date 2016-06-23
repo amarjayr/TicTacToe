@@ -9,6 +9,9 @@
 import Foundation
 import Messages
 
+// swiftlint:disable line_length
+// swiftlint:disable trailing_whitespace
+
 enum TTTCellState: CustomStringConvertible {
     case empty
     case occupied(Player)
@@ -62,11 +65,16 @@ func == (lhs: Player, rhs: Player) -> Bool {
 }
 
 class TicTacToe {
-    private var grid: [[TTTCellState]]
+    private var grid: [[TTTCellState]]!
     private var cacheWinner: Player?
 
     let player: Player!
     let opponents: [Player]!
+    var players: [Player] {
+        var mPlayers = opponents
+        mPlayers!.append(player)
+        return mPlayers!
+    }
 
     var size: Int {
         return grid.count
@@ -119,21 +127,21 @@ class TicTacToe {
         grid = predefinedBoard
     }
 
-    // MARK: Square manipulation
+    // MARK: Board manipulation
 
-    func selectCell(row x: Int, column y: Int) throws {
-        guard x < size && y < size && x >= 0 && y >= 0 else {
+    func selectCell(row: Int, column: Int) throws {
+        guard row < size && column < size && row >= 0 && column >= 0 else {
             fatalError("Coordinates not on grid")
         }
 
         guard winner == nil else {
             throw TTTError.gameDone
         }
-        
+
         var round = 0
         for p in opponents {
             let r = moveCount(for: p)
-            if (r > round) {
+            if r > round {
                 round = r
             }
         }
@@ -142,203 +150,123 @@ class TicTacToe {
             throw TTTError.notPlayerTurn
         }
 
-        if case .empty = getCell(row: x, column: y) {
-            self[x, y] = TTTCellState.occupied(player!)
+        if case .empty = getCell(row: row, column: column) {
+            self[row, column] = TTTCellState.occupied(player!)
         } else {
             throw TTTError.positionOccupied
         }
 
-        cacheWinner = checkWinnerAfterMove(row: x, column: y)
+        //cacheWinner = checkWinnerAfterMove(row: row, column: column)
     }
 
-    func getCell(row x: Int, column y: Int) -> TTTCellState {
-        return self[x, y]
+    func getCell(row: Int, column: Int) -> TTTCellState {
+        return self[row, column]
     }
 
     // MARK: Winning/Gameover checks
 
-    private func checkWinnerAfterMove(row x: Int, column y: Int) -> Player? {
-        guard x < size && y < size && x >= 0 && y >= 0 else {
-            fatalError("Coordinates not on grid")
+    func checkWinner() -> Player? {
+        return checkColumns(for: grid) ?? checkRows() ?? checkAntiDiagonals() ?? checkDiagonals()
+    }
+    
+    private func checkAntiDiagonals() -> Player? {
+        var newGrid: [[TTTCellState]] = grid
+        for i in 0..<grid.count {
+            newGrid[i].insert(contentsOf: Array(repeatElement(TTTCellState.empty, count: i)), at: 0)
+            let length = newGrid[i].count
+            newGrid[i] += Array(repeatElement(TTTCellState.empty, count: ((2*size - 1) - length)))
         }
-
-        var numberOwnedInColumn = 0
-        for i in 0..<size {
-            if case .occupied(let user) = self[x, i] where user == player {
-                numberOwnedInColumn += 1
-            }
-            if numberOwnedInColumn == requiredInARow {
-                return player
-            }
+        
+        return checkColumns(for: newGrid)
+    }
+    
+    private func checkDiagonals() -> Player? {
+        var newGrid: [[TTTCellState]] = grid
+        for i in 0..<grid.count {
+            newGrid[i].insert(contentsOf: Array(repeatElement(TTTCellState.empty, count: ((size-1)-i))), at: 0)
+            let length = newGrid[i].count
+            newGrid[i] += Array(repeatElement(TTTCellState.empty, count: ((2*size - 1) - length)))
         }
-
-        var numberOwnedInRow = 0
-        for i in 0..<size {
-            if case .occupied(let user) = self[i, y] where user == player {
-                numberOwnedInRow += 1
-            }
-            if numberOwnedInRow == requiredInARow {
-                return player
+        
+        return checkColumns(for: newGrid)
+    }
+    
+    private func checkRows() -> Player? {
+        var owned = [Player: [Int]]()
+        
+        for player in players {
+            owned[player] =  Array(repeating: 0, count: size)
+        }
+        
+        for j in 0..<size {
+            for i in 0..<size {
+                var occupiedBy: Player?
+                if case .occupied(let user) = self[i, j] {
+                    owned[user]![i] += 1
+                    occupiedBy = user
+                }
+                
+                for (player, array) in owned {
+                    for numberOwned in array {
+                        if numberOwned == requiredInARow {
+                            cacheWinner = player
+                            return player
+                        }
+                    }
+                    
+                    if occupiedBy == nil {
+                        owned[player]![i] = 0
+                    } else if player != occupiedBy {
+                        owned[player]![i] = 0
+                    }
+                }
+                
             }
         }
         
-        // TODO: implement efficient diagonal/antidiagonal traversing base on certain diagonal
-        return checkDiagonal() ?? checkAntidiagonal()
+        return nil
+    }
+    
+    private func checkColumns(for grid: [[TTTCellState]]) -> Player? {
+        var owned = [Player: [Int]]()
+        
+        for player in players {
+            owned[player] =  Array(repeating: 0, count: grid[0].count)
+        }
+        
+        for i in 0..<grid.count {
+            for j in 0..<grid[0].count {
+                var occupiedBy: Player?
+                if case .occupied(let user) = grid[i][j] {
+                    owned[user]![j] += 1
+                    occupiedBy = user
+                }
+                
+                for (player, array) in owned {
+                    for numberOwned in array {
+                        if numberOwned == requiredInARow {
+                            cacheWinner = player
+                            return player
+                        }
+                    }
+                    
+                    if occupiedBy == nil {
+                        owned[player]![j] = 0
+                    } else if player != occupiedBy {
+                        owned[player]![j] = 0
+                    }
+                }
+                
+            }
+        }
+        
+        return nil
     }
 
     private func isDraw() -> Bool {
         return moveCount(for: player!) == Int(pow(Decimal(size), 2) - 1)
     }
-
-    private func checkWinner() -> Player? {
-        var userOwned = Array(repeating: 0, count: size*2)
-        var opponentsOwned = [Player: [Int]]()
-        
-        for opponent in opponents {
-            opponentsOwned[opponent] = Array(repeating: 0, count: size*2)
-        }
-        
-        for i in 0..<size {
-            for j in 0..<size {
-                if case .occupied(let user) = self[i, j] where user == player {
-                    userOwned[j] += 1
-                } else if case .occupied(let user) = self[i, j] {
-                    if opponentsOwned[user]?[j] == nil {
-                        opponentsOwned[user]![j] = 0
-                    }
-                    
-                    opponentsOwned[user]![j] += 1
-                }
-            }
-        }
-
-        for j in 0..<size {
-            for i in 0..<size {
-                if case .occupied(let user) = self[i, j] where user == player {
-                    userOwned[i+size] += 1
-                } else if case .occupied(let user) = self[i, j] {
-                    if opponentsOwned[user]?[i+size] == nil {
-                        opponentsOwned[user]?[i+size] = 0
-                    }
-                    
-                    opponentsOwned[user]![i+size] += 1
-                }
-            }
-        }
-        for numberOwned in userOwned {
-            if numberOwned == requiredInARow {
-                cacheWinner = player
-                return player
-            }
-        }
-
-        for (opponentP, array) in opponentsOwned {
-            for numberOwned in array {
-                if numberOwned == requiredInARow {
-                    cacheWinner = opponentP
-                    return opponentP
-                }
-            }
-        }
-
-        return checkDiagonal() ?? checkAntidiagonal()
-    }
     
-    private func checkDiagonal() -> Player? {
-        var rowsCurrent = [Int:Int]()
-        
-        var rowsOpponents = [Player: [Int]]()
-        
-        for opponent in opponents {
-            rowsOpponents[opponent] = Array(repeating: 0, count: (2*size-1))
-        }
-        
-        for slice in 0..<(2*size-1) {
-            let z = slice < size ? 0 : slice - size + 1
-            let j = z
-            
-            for j in j..<(slice-z)+1 {                
-                if case .occupied(let user) = self[j, slice - j] where user == player  {
-                    if rowsCurrent[slice] == nil {
-                        rowsCurrent[slice] = 0
-                    }
-                    
-                    rowsCurrent[slice]! += 1
-                } else if case .occupied(let user) = self[j, slice - j]   {
-                    if rowsOpponents[user]?[slice] == nil {
-                        rowsOpponents[user]![slice] = 0
-                    }
-                    
-                    rowsOpponents[user]![slice] += 1
-                }
-            }
-        }
-        
-        for (_, len) in rowsCurrent {
-            if len >= requiredInARow {
-                return player
-            }
-        }
-        
-        for (opponentP, array) in rowsOpponents {
-            for numberOwned in array {
-                if numberOwned >= requiredInARow {
-                    return opponentP
-                }
-            }
-        }
-        
-        return nil
-    }
-    
-    private func checkAntidiagonal() -> Player? {
-        var rowsCurrent = [Int:Int]()
-        var rowsOpponents = [Player: [Int]]()
-        
-        for opponent in opponents {
-            rowsOpponents[opponent] = Array(repeating: 0, count: (2*size-1))
-        }
-        
-        
-        for slice in 0..<(2*size-1) {
-            let z = slice < size ? 0 : slice - size + 1
-            let j = z
-            
-            for j in j..<(slice-z)+1 {
-                
-                if case .occupied(let user) = self[j, (size-1)-(slice-j)] where user == player  {
-                    if rowsCurrent[slice] == nil {
-                        rowsCurrent[slice] = 0
-                    }
-                    
-                    rowsCurrent[slice]! += 1
-                } else if case .occupied(let user) = self[j, (size-1)-(slice-j)] {
-                    if rowsOpponents[user]?[slice] == nil {
-                        rowsOpponents[user]?[slice] = 0
-                    }
-                    
-                    rowsOpponents[user]![slice] += 1
-                }
-            }
-        }
-        
-        for (_, len) in rowsCurrent {
-            if len >= requiredInARow {
-                return player
-            }
-        }
-        
-        for (opponentP, array) in rowsOpponents {
-            for numberOwned in array {
-                if numberOwned >= requiredInARow {
-                    return opponentP
-                }
-            }
-        }
-        
-        return nil
-    }
-
     // MARK: Utility
 
     func moveCount(for player: Player?) -> Int {
@@ -352,6 +280,20 @@ class TicTacToe {
             }
             return false
         }.count
+    }
+
+    func containsUserWith(uuid user: String) -> Bool {
+        if player.uuid == user {
+            return true
+        }
+
+        for opponent in opponents {
+            if opponent.uuid == user {
+                return true
+            }
+        }
+
+        return false
     }
 }
 
@@ -371,11 +313,11 @@ extension TicTacToe {
             return nil
         }
     }
-    
+
     func opponentsToJSON() -> String? {
         var playersArray: [Player] = opponents
         playersArray.append(player)
-        
+
         do {
             let data = try JSONSerialization.data(withJSONObject: playersArray.map({ (value: Player) -> String in
                 return String(value)
@@ -393,7 +335,7 @@ extension TicTacToe {
                 let grid = json!
 
                 var returnGrid = Array(repeatElement(Array(repeatElement(TTTCellState.empty, count: grid.count)), count: grid.count))
-                
+
                 for i in 0..<grid.count {
                     for j in 0..<grid.count {
                         if grid[i][j] != "empty" {
@@ -414,18 +356,18 @@ extension TicTacToe {
             fatalError("boardFrom, unkown error")
         }
     }
-    
+
     static func opponentsFromJSON(json string: String) -> [Player]? {
         if let data = string.data(using: String.Encoding.utf8) {
             do {
                 let json = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String]
-                
+
                 var returnGrid = [Player]()
-                
+
                 for playerStr in json! {
                     returnGrid.append(Player(uuid: playerStr.components(separatedBy: ":/:")[0], color: UIColor(hex: playerStr.components(separatedBy: ":/:")[1])))
                 }
-                
+
                 return returnGrid
             } catch let error as NSError {
                 fatalError("JSON PARSING ERROR: " + error.description)
@@ -448,12 +390,12 @@ extension TicTacToe {
     convenience init?(queryItems: [URLQueryItem], current uuid: String) {
         var opponents = TicTacToe.opponentsFromJSON(json: queryItems[0].value!)
         var current: Player?
-        
+
         #if (arch(i386) || arch(x86_64))
             current = Player(uuid: opponents?[0].uuid, color: opponents?[0].color)
             opponents?.remove(at: 0)
         #endif
-        
+
         opponents = opponents?.filter({ (value: Player) -> Bool in
             if value.uuid != uuid {
                 return true
@@ -464,7 +406,7 @@ extension TicTacToe {
                 return false
             }
         })
-        
+
         self.init(player: current!, opponents: opponents!, board: TicTacToe.boardFrom(json: queryItems[1].value!)!)
     }
 }
@@ -483,35 +425,4 @@ extension TicTacToe: Equatable {}
 
 func == (lhs: TicTacToe, rhs: TicTacToe) -> Bool {
     return lhs.player == rhs.player && lhs.opponents == rhs.opponents && lhs.boardToJSON() == rhs.boardToJSON()
-}
-
-extension UIColor {
-    public func hexString(includeAlpha: Bool) -> String {
-        var r: CGFloat = 0
-        var g: CGFloat = 0
-        var b: CGFloat = 0
-        var a: CGFloat = 0
-        self.getRed(&r, green: &g, blue: &b, alpha: &a)
-
-        if includeAlpha {
-            return String(format: "#%02X%02X%02X%02X", Int(r * 255), Int(g * 255), Int(b * 255), Int(a * 255))
-        } else {
-            return String(format: "#%02X%02X%02X", Int(r * 255), Int(g * 255), Int(b * 255))
-        }
-    }
-
-    public convenience init(hex: String, alpha: CGFloat? = 1.0) {
-        var hexInt: UInt32 = 0
-        let scanner: Scanner = Scanner(string: hex)
-        scanner.charactersToBeSkipped = CharacterSet(charactersIn: "#")
-        scanner.scanHexInt32(&hexInt)
-
-        let hexint = Int(hexInt)
-        let red = CGFloat((hexint & 0xff0000) >> 16) / 255.0
-        let green = CGFloat((hexint & 0xff00) >> 8) / 255.0
-        let blue = CGFloat((hexint & 0xff) >> 0) / 255.0
-        let alpha = alpha!
-
-        self.init(red: red, green: green, blue: blue, alpha: alpha)
-    }
 }

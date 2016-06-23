@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		09091A1A1D1CA81F0024BDAF /* UIColor+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09091A191D1CA81F0024BDAF /* UIColor+Hex.swift */; };
 		094C286F1D11D59100593205 /* TicTacToe.swift in Sources */ = {isa = PBXBuildFile; fileRef = 094C286E1D11D59100593205 /* TicTacToe.swift */; };
 		0973C5E61D15173200528E5F /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0973C5E51D15173200528E5F /* GameViewController.swift */; };
 		0973C5E81D151C5200528E5F /* GameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0973C5E71D151C5200528E5F /* GameView.swift */; };
@@ -45,6 +46,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		09091A191D1CA81F0024BDAF /* UIColor+Hex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+Hex.swift"; sourceTree = "<group>"; };
 		094C286E1D11D59100593205 /* TicTacToe.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TicTacToe.swift; sourceTree = "<group>"; };
 		0973C5E51D15173200528E5F /* GameViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameViewController.swift; sourceTree = "<group>"; };
 		0973C5E71D151C5200528E5F /* GameView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameView.swift; sourceTree = "<group>"; };
@@ -122,6 +124,7 @@
 				09B2DA931D1114AA00417BEF /* Assets.xcassets */,
 				09B2DA951D1114AA00417BEF /* Info.plist */,
 				094C286E1D11D59100593205 /* TicTacToe.swift */,
+				09091A191D1CA81F0024BDAF /* UIColor+Hex.swift */,
 				09A9C43C1D14C4FF0040BBFC /* GamesHistory.swift */,
 			);
 			path = MessagesExtension;
@@ -238,7 +241,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "";
+			shellScript = "#exit 0\n\nif which swiftlint >/dev/null; then\nswiftlint\nelse\necho \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -250,6 +253,7 @@
 				09A9C43D1D14C4FF0040BBFC /* GamesHistory.swift in Sources */,
 				09B2DA8F1D1114AA00417BEF /* MessagesViewController.swift in Sources */,
 				094C286F1D11D59100593205 /* TicTacToe.swift in Sources */,
+				09091A1A1D1CA81F0024BDAF /* UIColor+Hex.swift in Sources */,
 				0973C5E81D151C5200528E5F /* GameView.swift in Sources */,
 				0973C5E61D15173200528E5F /* GameViewController.swift in Sources */,
 			);

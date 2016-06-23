@@ -8,6 +8,9 @@
 
 import UIKit
 
+// swiftlint:disable line_length
+// swiftlint:disable trailing_whitespace
+
 class GameViewController: UIViewController {
     static let storyboardIdentifier = "GameViewController"
 
@@ -85,7 +88,7 @@ extension GameViewController: UICollectionViewDataSource, UICollectionViewDelega
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = gameView!.dequeueReusableCell(withReuseIdentifier: "TicTacToeCell", for: indexPath)
 
-        if case .occupied(let user) = game![indexPath.row%(game?.size)!, Int(floor(Double(indexPath.row/(game?.size)!)))] {
+        if case .occupied(let user) = game![Int(floor(Double(indexPath.row/(game?.size)!))), indexPath.row%(game?.size)!] {
             cell.contentView.backgroundColor = user.color
         } else {
             cell.contentView.backgroundColor = #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1)
@@ -102,12 +105,13 @@ extension GameViewController: UICollectionViewDataSource, UICollectionViewDelega
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let layout = collectionViewLayout as? UICollectionViewFlowLayout
 
-        return CGSize(width: floor(gameView!.bounds.size.width / CGFloat(game!.size))-layout!.minimumInteritemSpacing, height: floor(gameView!.bounds.size.width / CGFloat(game!.size))-layout!.minimumInteritemSpacing)
+        return CGSize(width: floor(gameView!.bounds.size.width / CGFloat(game!.size))-layout!.minimumInteritemSpacing,
+                      height: floor(gameView!.bounds.size.width / CGFloat(game!.size))-layout!.minimumInteritemSpacing)
     }
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let row = Int(indexPath.row%(game?.size)!)
-        let column = Int(floor(Double(indexPath.row/(game?.size)!)))
+        let column = Int(indexPath.row%(game?.size)!)
+        let row = Int(floor(Double(indexPath.row/(game?.size)!)))
 
         do {
             try game!.selectCell(row: row, column: column)
