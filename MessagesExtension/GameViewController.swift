@@ -66,7 +66,9 @@ class GameViewController: UIViewController {
             gameDoneViewPlayAgain.addTarget(self, action: #selector(newGameTapped), for: .touchUpInside)
         }
 
+        gameView!.collectionViewLayout.invalidateLayout()
     }
+    
     func newGameTapped() {
         delegate?.requestNewGame()
     }
@@ -102,8 +104,8 @@ extension GameViewController: UICollectionViewDataSource, UICollectionViewDelega
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let layout = collectionViewLayout as? UICollectionViewFlowLayout
 
-        return CGSize(width: floor(gameView!.bounds.size.width / CGFloat(game!.size))-layout!.minimumInteritemSpacing,
-                      height: floor(gameView!.bounds.size.width / CGFloat(game!.size))-layout!.minimumInteritemSpacing)
+        return CGSize(width: floor(gameView!.bounds.size.width / CGFloat(game!.size))-layout!.minimumLineSpacing,
+                      height: floor(gameView!.bounds.size.width / CGFloat(game!.size))-layout!.minimumLineSpacing)
     }
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {

@@ -63,7 +63,6 @@ func == (lhs: Player, rhs: Player) -> Bool {
 
 class TicTacToe {
     private var grid: [[TTTCellState]]!
-    private var cacheWinner: Player?
 
     let player: Player!
     let opponents: [Player]!
@@ -88,9 +87,7 @@ class TicTacToe {
     }
 
     var winner: Player? {
-        if let w = cacheWinner {
-            return w
-        } else if let w = checkWinner() {
+        if let w = checkWinner() {
             return w
         } else if isDraw() {
             return Player()
@@ -147,17 +144,11 @@ class TicTacToe {
             throw TTTError.notPlayerTurn
         }
 
-        if case .empty = getCell(row: row, column: column) {
+        if case .empty = self[row, column] {
             self[row, column] = TTTCellState.occupied(player!)
         } else {
             throw TTTError.positionOccupied
         }
-
-        //cacheWinner = checkWinnerAfterMove(row: row, column: column)
-    }
-
-    func getCell(row: Int, column: Int) -> TTTCellState {
-        return self[row, column]
     }
 
     // MARK: Winning/Gameover checks
@@ -206,7 +197,6 @@ class TicTacToe {
                 for (player, array) in owned {
                     for numberOwned in array {
                         if numberOwned == requiredInARow {
-                            cacheWinner = player
                             return player
                         }
                     }
@@ -242,7 +232,6 @@ class TicTacToe {
                 for (player, array) in owned {
                     for numberOwned in array {
                         if numberOwned == requiredInARow {
-                            cacheWinner = player
                             return player
                         }
                     }

@@ -150,11 +150,11 @@ extension MessagesViewController: GameViewControllerDelegate {
             }
         }
 
-        if game.winner != nil {
+        /*if game.winner != nil {
             //var history = GamesHistory.load()
             //history.append(game)
             //history.save()
-        }
+        }*/
 
         dismiss()
     }
