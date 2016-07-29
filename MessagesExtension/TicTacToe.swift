@@ -106,7 +106,7 @@ class TicTacToe {
     }
 
     // MARK: Initializers
-
+    
     init(player currentPlayer: Player, opponents opponentPlayers: [Player], size: Int = 3) {
         player = currentPlayer
         opponents = opponentPlayers
@@ -123,6 +123,7 @@ class TicTacToe {
 
     // MARK: Board manipulation
 
+    
     func selectCell(row: Int, column: Int) throws {
         guard row < size && column < size && row >= 0 && column >= 0 else {
             fatalError("Coordinates not on grid")
@@ -377,18 +378,11 @@ extension TicTacToe {
         var opponents = TicTacToe.opponentsFromJSON(json: queryItems[0].value!)
         var current: Player?
 
-        #if (arch(i386) || arch(x86_64))
-            current = Player(uuid: opponents?[0].uuid, color: opponents?[0].color)
-            opponents?.remove(at: 0)
-        #endif
-
         opponents = opponents?.filter({ (value: Player) -> Bool in
             if value.uuid != uuid {
                 return true
             } else {
-                #if !(arch(i386) || arch(x86_64))
-                    current = value
-                #endif
+                current = value
                 return false
             }
         })

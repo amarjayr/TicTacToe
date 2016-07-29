@@ -29,12 +29,12 @@ struct GamesHistory {
 
     static func load(for uuid: String) -> GamesHistory {
         var games = [TicTacToe]()
-        let defaults = UserDefaults.standard()
+        let defaults = UserDefaults.standard
 
         if let savedGames = defaults.object(forKey: GamesHistory.userDefaultsKey) as? [String] {
             games = savedGames.flatMap { urlString in
                 guard let url = URL(string: urlString) else { return nil }
-                guard let components = URLComponents(url: url, resolvingAgainstBaseURL: false), queryItems = components.queryItems else { return nil }
+                guard let components = URLComponents(url: url, resolvingAgainstBaseURL: false), let queryItems = components.queryItems else { return nil }
 
                 return TicTacToe(queryItems: queryItems, current: uuid)
             }
@@ -74,7 +74,7 @@ struct GamesHistory {
             return components.url?.absoluteString
         }
 
-        let defaults = UserDefaults.standard()
+        let defaults = UserDefaults.standard
         defaults.set(gameURLStrings as AnyObject, forKey: GamesHistory.userDefaultsKey)
     }
 
